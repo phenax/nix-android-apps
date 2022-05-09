@@ -7,11 +7,11 @@ nixpkgs.stdenv.mkDerivation {
   version = "0.0.0";
 
   src = ''./test.nix'';
-  unpackPhase = ''ls'';
-  buildPhase = ''mkdir -p $out && cp ${android.pkgs.fDroid}/app.apk $out/fdroid.apk'';
+  unpackPhase = ''echo ${android.pkgs."org.fdroid.fdroid".pname}'';
+  buildPhase = ''mkdir -p $out && cp ${android.pkgs."org.fdroid.fdroid"}/app.apk $out/fdroid.apk'';
   installPhase = ''echo 1'';
 
   buildInputs = [
-    android.pkgs.fDroid
+    android.pkgs."org.fdroid.fdroid"
   ];
 }

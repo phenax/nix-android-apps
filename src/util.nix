@@ -1,13 +1,13 @@
 { stdenv, wget, ... }:
 {
   makeFDroidPackage =
-    { pname, version, versionCode }: stdenv.mkDerivation rec {
-      name = "${pname}--${versionCode}";
-      inherit version;
+    { name, versionCode }: stdenv.mkDerivation rec {
+      pname = name;
+      version = versionCode;
 
       buildInputs = [ wget ];
 
-      src = builtins.fetchurl "https://f-droid.org/repo/${pname}_${versionCode}.apk";
+      src = builtins.fetchurl "https://f-droid.org/repo/${name}_${versionCode}.apk";
 
       unpackPhase = ''mkdir -p $out && cp "$src" "$out/app.apk"'';
       buildPhase = ''ls'';
