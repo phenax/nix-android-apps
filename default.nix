@@ -4,4 +4,5 @@ let
 in
 {
   pkgs = packages;
+  mkInstaller = import ./src/installer.nix nixpkgs;
 }
