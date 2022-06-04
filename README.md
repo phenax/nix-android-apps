@@ -4,7 +4,7 @@ An experimental nix overlay to support installing/updating android apps declarat
 Currently it installs apps using adb but I'm planning to switch to using [Nix-on-droid](https://github.com/t184256/nix-on-droid)
 
 ## Creating an installer
-Example in [test.nix](./text.nix)
+Example in [test.nix](./test.nix)
 
 ```nix
 let
