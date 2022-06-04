@@ -12,22 +12,37 @@ let
     "org.fdroid.fdroid"
   ];
   packages = map (p: android.pkgs."${p}") packageNames;
+  myPackage =
+    with nixpkgs;
+    stdenv.mkDerivation {
+      pname = "test-package-here";
+      version = "0.0.0";
+
+      src = ''./test.nix'';
+      unpackPhase = ''echo 1'';
+      buildPhase = ''echo 1'';
+      installPhase =
+        let
+          installScript = writeShellScript "install-android-apps" ''
+            ${concatStringsSep " ;\n" (map (p: "adb install ${p}/app.apk") packages)}
+          '';
+        in
+        ''
+          mkdir -p $out/apps;
+          mkdir -p $out/bin;
+
+          # Copy apps
+          ${concatStringsSep " ; " (map (p: "cp ${p}/app.apk $out/apps/${p.pname}.apk") packages)}
+
+          # Installer
+          cp ${installScript} $out/bin/install-android-apps;
+          wrapProgram $out/bin/install-android-apps --prefix PATH : ${lib.makeBinPath [bash android-tools]};
+        '';
+
+      buildInputs = [ packages ];
+      nativeBuildInputs = [ makeWrapper ];
+    };
 in
-nixpkgs.stdenv.mkDerivation {
-  pname = "test-package-here";
-  version = "0.0.0";
-
-  src = ''./test.nix'';
-  unpackPhase = ''echo 1'';
-  buildPhase = ''
-    mkdir -p $out;
-    ${concatStringsSep " ; " (map (p: "cp ${p}/app.apk $out/${p.pname}.apk") packages)}
-  '';
-  installPhase = ''
-    ${concatStringsSep " ; " (map (p: "ls $out/${p.pname}.apk") packages)}
-  '';
-
-  buildInputs = [
-    packages
-  ];
+nixpkgs.mkShell {
+  buildInputs = [ myPackage ];
 }
