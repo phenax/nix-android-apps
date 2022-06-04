@@ -22,7 +22,7 @@ get_version_code() {
   fi;
 }
 
-pkg_template() {
+fdroid_pkg_template() {
   local name="$1";
   local version="$2";
   local version_code=$(get_version_code "$name" "$version");
@@ -30,19 +30,40 @@ pkg_template() {
 
   echo "args:
 let
-  util = import ../../src/util.nix args;
+  fdroid = import ../../src/fdroid.nix args;
 in
-util.makeFDroidPackage {
+fdroid.makeFDroidPackage {
   name = \"$name\";
   versionCode = \"$version_code\";
 }";
 }
 
-generate_package() {
+url_pkg_template() {
   local name="$1";
   local version="$2";
+  local url="$3";
+
+  echo "args:
+let
+  url = import ../../src/url.nix args;
+in
+url.makeUrlPackage {
+  name = \"$name\";
+  version = \"$version\";
+  url = \"$url\";
+}";
+}
+
+generate_package() {
+  local source="$1"; shift;
+
+  local name="$1"; shift;
+
   mkdir -p ./packages/$name/;
-  pkg_template "$name" "$version" > ./packages/$name/pkg.nix;
+  case "$source" in
+    fdroid) fdroid_pkg_template "$name" "$@" > ./packages/$name/pkg.nix ;;
+    url) url_pkg_template "$name" "$@" > ./packages/$name/pkg.nix ;;
+  esac
 }
 
 generate_package "$@";

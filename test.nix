@@ -10,6 +10,7 @@ let
     "dev.msfjarvis.aps"
     "org.liberty.android.freeotpplus"
     "org.fdroid.fdroid"
+    "io.github.phenax.owyn"
   ];
   packages = map (p: android.pkgs."${p}") packageNames;
   myPackage =
@@ -24,7 +25,7 @@ let
       installPhase =
         let
           installScript = writeShellScript "install-android-apps" ''
-            ${concatStringsSep " ;\n" (map (p: "adb install ${p}/app.apk") packages)}
+            ${concatStringsSep " ;\n" (map (p: "echo Installing ${p.pname}@${p.version} && adb install ${p}/app.apk") packages)}
           '';
         in
         ''
