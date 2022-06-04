@@ -1,8 +1,8 @@
 args:
 let
-  util = import ../../src/util.nix args;
+  fdroid = import ../../src/fdroid.nix args;
 in
-util.makeFDroidPackage {
+fdroid.makeFDroidPackage {
   name = "org.fdroid.fdroid";
   versionCode = "1015052";
 }
