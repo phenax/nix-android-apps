@@ -4,5 +4,5 @@ let
 in
 util.makeFDroidPackage {
   name = "org.fdroid.fdroid";
-  versionCode = "1014050";
+  versionCode = "1015052";
 }
